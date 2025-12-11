@@ -1,5 +1,5 @@
 module(
-    name = "com_github_daulet_tokenizers",
+    name = "com_github_mortum5_tokenizers",
     version = "1.20.2",
 )
 

@@ -8,11 +8,11 @@ Go bindings for the [HuggingFace Tokenizers](https://github.com/huggingface/toke
 
 ### Using pre-built binaries
 
-If you don't want to install Rust toolchain, build it in docker: `docker build --platform=linux/amd64 -f release/Dockerfile .` or use prebuilt binaries from the [releases](https://github.com/daulet/tokenizers/releases) page. Prebuilt libraries are available for:
+If you don't want to install Rust toolchain, build it in docker: `docker build --platform=linux/amd64 -f release/Dockerfile .` or use prebuilt binaries from the [releases](https://github.com/mortum5/tokenizers/releases) page. Prebuilt libraries are available for:
 
-* [darwin-arm64](https://github.com/daulet/tokenizers/releases/latest/download/libtokenizers.darwin-arm64.tar.gz)
-* [linux-arm64](https://github.com/daulet/tokenizers/releases/latest/download/libtokenizers.linux-arm64.tar.gz)
-* [linux-amd64](https://github.com/daulet/tokenizers/releases/latest/download/libtokenizers.linux-amd64.tar.gz)
+* [darwin-arm64](https://github.com/mortum5/tokenizers/releases/latest/download/libtokenizers.darwin-arm64.tar.gz)
+* [linux-arm64](https://github.com/mortum5/tokenizers/releases/latest/download/libtokenizers.linux-arm64.tar.gz)
+* [linux-amd64](https://github.com/mortum5/tokenizers/releases/latest/download/libtokenizers.linux-amd64.tar.gz)
 
 ## Getting started
 
@@ -21,7 +21,7 @@ TLDR: [working example](example/main.go).
 Load a tokenizer from a JSON config:
 
 ```go
-import "github.com/daulet/tokenizers"
+import "github.com/mortum5/tokenizers"
 
 tk, err := tokenizers.FromFile("./data/bert-base-uncased.json")
 if err != nil {
@@ -34,7 +34,7 @@ defer tk.Close()
 Load a tokenizer from Huggingface:
 
 ```go
-import "github.com/daulet/tokenizers"
+import "github.com/mortum5/tokenizers"
 
 tk, err := tokenizers.FromPretrained("google-bert/bert-base-uncased")
 if err != nil {
@@ -96,7 +96,7 @@ Tiktoken is 3x faster on most tasks.
 
 goos: darwin
 goarch: arm64
-pkg: github.com/daulet/tokenizers
+pkg: github.com/mortum5/tokenizers
 cpu: Apple M1 Pro
 BenchmarkEncodeNTimes/huggingface-10              133966             10456 ns/op             256 B/op         12 allocs/op
 BenchmarkEncodeNTimes/tiktoken-10                 339538              3759 ns/op              88 B/op          4 allocs/op
@@ -107,7 +107,7 @@ BenchmarkDecodeNTimes/tiktoken-10                2369224               513.9 ns/
 BenchmarkDecodeNTokens/huggingface-10            7423770               170.8 ns/op             4 B/op          0 allocs/op
 BenchmarkDecodeNTokens/tiktoken-10              80597544                19.40 ns/op            4 B/op          0 allocs/op
 PASS
-ok      github.com/daulet/tokenizers    40.626s
+ok      github.com/mortum5/tokenizers    40.626s
 ```
 
 ### Go vs Rust
@@ -121,13 +121,13 @@ go test . -bench=. -benchmem -benchtime=10s
 
 goos: darwin
 goarch: arm64
-pkg: github.com/daulet/tokenizers
+pkg: github.com/mortum5/tokenizers
 BenchmarkEncodeNTimes-10     	  959494	     12622 ns/op	     232 B/op	      12 allocs/op
 BenchmarkEncodeNChars-10      1000000000	     2.046 ns/op	       0 B/op	       0 allocs/op
 BenchmarkDecodeNTimes-10     	 2758072	      4345 ns/op	      96 B/op	       3 allocs/op
 BenchmarkDecodeNTokens-10    	18689725	     648.5 ns/op	       7 B/op	       0 allocs/op
 PASS
-ok   github.com/daulet/tokenizers 126.681s
+ok   github.com/mortum5/tokenizers 126.681s
 ```
 
 Run equivalent Rust tests with `cargo bench`.

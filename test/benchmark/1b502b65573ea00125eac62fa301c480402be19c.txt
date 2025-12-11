@@ -1,6 +1,6 @@
 goos: darwin
 goarch: arm64
-pkg: github.com/daulet/tokenizers
+pkg: github.com/mortum5/tokenizers
 BenchmarkEncodeNTimes-10     	   95174	     12667 ns/op	     232 B/op	      12 allocs/op
 BenchmarkEncodeNTimes-10     	   94437	     12580 ns/op	     232 B/op	      12 allocs/op
 BenchmarkEncodeNTimes-10     	   93362	     12583 ns/op	     232 B/op	      12 allocs/op
@@ -42,4 +42,4 @@ BenchmarkDecodeNTokens-10    	 1847911	       659.2 ns/op	       7 B/op	       0
 BenchmarkDecodeNTokens-10    	 1808113	       654.2 ns/op	       7 B/op	       0 allocs/op
 BenchmarkDecodeNTokens-10    	 1820958	       666.3 ns/op	       7 B/op	       0 allocs/op
 PASS
-ok  	github.com/daulet/tokenizers	245.425s
+ok  	github.com/mortum5/tokenizers	245.425s

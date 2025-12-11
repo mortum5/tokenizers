@@ -4,7 +4,7 @@ load("@rules_go//go:def.bzl", "go_library", "go_test")
 load("@rules_rust//rust:defs.bzl", "rust_static_library")
 
 # gazelle:exclude release
-# gazelle:prefix github.com/daulet/tokenizers
+# gazelle:prefix github.com/mortum5/tokenizers
 gazelle(
     name = "gazelle",
 )
@@ -55,6 +55,6 @@ go_library(
         ":tokenizers_rs",
     ],
     cgo = True,
-    importpath = "github.com/daulet/tokenizers",
+    importpath = "github.com/mortum5/tokenizers",
     visibility = ["//visibility:public"],
 )

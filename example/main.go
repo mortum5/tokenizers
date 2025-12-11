@@ -5,7 +5,7 @@ import (
 	"log"
 	"strings"
 
-	"github.com/daulet/tokenizers"
+	"github.com/mortum5/tokenizers"
 )
 
 func simple() error {

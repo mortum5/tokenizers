@@ -24,7 +24,7 @@ Successfully downloaded /var/folders/w5/wm3bq7bj62d99v6mlhybyngw0000gn/T/hugging
 Successfully downloaded /var/folders/w5/wm3bq7bj62d99v6mlhybyngw0000gn/T/huggingface-tokenizer-51965006/tokenizer.json
 goos: darwin
 goarch: arm64
-pkg: github.com/daulet/tokenizers
+pkg: github.com/mortum5/tokenizers
 cpu: Apple M1 Pro
 BenchmarkEncodeNTimes/huggingface-8         	  134212	     11367 ns/op	     256 B/op	      12 allocs/op
 BenchmarkEncodeNTimes/huggingface-8         	  131604	      9266 ns/op	     256 B/op	      12 allocs/op

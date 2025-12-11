@@ -8,7 +8,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/daulet/tokenizers"
+	"github.com/mortum5/tokenizers"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
