@@ -5,6 +5,7 @@ package tokenizers
 /*
 #cgo LDFLAGS: -ltokenizers -ldl -lm -lstdc++
 #include <stdlib.h>
+#include <stdint.h>
 #include "tokenizers.h"
 
 // Link-time version check: this will fail to link if the library version doesn't match
@@ -309,6 +310,7 @@ type Encoding struct {
 	AttentionMask     []uint32
 	Tokens            []string
 	Offsets           []Offset
+	WordIDs           []int32
 }
 
 type encodeOpts struct {
@@ -319,6 +321,7 @@ type encodeOpts struct {
 	ReturnSpecialTokensMask C.bool
 	ReturnAttentionMask     C.bool
 	ReturnOffsets           C.bool
+	ReturnWordIDs           C.bool
 }
 
 type EncodeOption func(eo *encodeOpts)
@@ -340,6 +343,15 @@ func offsetVecToSlice(arrPtr *C.size_t, tokenLength int) []Offset {
 		offset := Offset{uint(arr[counter]), uint(arr[counter+1])}
 		slice[i] = offset
 		counter = counter + 2
+	}
+	return slice
+}
+
+func int32VecToSlice(arrPtr *C.int32_t, len int) []int32 {
+	arr := unsafe.Slice(arrPtr, len)
+	slice := make([]int32, len)
+	for i, v := range arr {
+		slice[i] = int32(v)
 	}
 	return slice
 }
@@ -377,6 +389,7 @@ func WithReturnAllAttributes() EncodeOption {
 		eo.ReturnAttentionMask = C.bool(true)
 		eo.ReturnTokens = C.bool(true)
 		eo.ReturnOffsets = C.bool(true)
+		eo.ReturnWordIDs = C.bool(true)
 	}
 }
 
@@ -407,6 +420,12 @@ func WithReturnAttentionMask() EncodeOption {
 func WithReturnOffsets() EncodeOption {
 	return func(eo *encodeOpts) {
 		eo.ReturnOffsets = C.bool(true)
+	}
+}
+
+func WithReturnWordIDs() EncodeOption {
+	return func(eo *encodeOpts) {
+		eo.ReturnWordIDs = C.bool(true)
 	}
 }
 
@@ -453,6 +472,10 @@ func (t *Tokenizer) EncodeWithOptions(str string, addSpecialTokens bool, opts ..
 
 	if encOptions.ReturnOffsets && res.offsets != nil {
 		encoding.Offsets = offsetVecToSlice(res.offsets, len)
+	}
+
+	if encOptions.ReturnWordIDs && res.word_ids != nil {
+		encoding.WordIDs = int32VecToSlice(res.word_ids, len)
 	}
 
 	return encoding

@@ -9,6 +9,7 @@ struct tokenizers_encode_options {
   bool return_special_tokens_mask;
   bool return_attention_mask;
   bool return_offsets;
+  bool return_word_ids;
 };
 
 struct tokenizers_options {
@@ -22,6 +23,7 @@ struct tokenizers_buffer {
   uint32_t *attention_mask;
   char *tokens;
   size_t *offsets;
+  int* word_ids;
   uint32_t len;
 };
 

@@ -84,6 +84,7 @@ impl UnifiedTokenizer {
                     special_tokens_mask: Some(encoding.get_special_tokens_mask().to_vec()),
                     attention_mask: Some(encoding.get_attention_mask().to_vec()),
                     offsets: Some(encoding.get_offsets().to_vec()),
+                    word_ids: Some(encoding.get_word_ids().to_vec()),
                 })
             }
             UnifiedTokenizer::Tiktoken(bpe, _vocab_size, special_tokens, _special_token_ids) => {
@@ -97,6 +98,7 @@ impl UnifiedTokenizer {
                     special_tokens_mask: None,
                     attention_mask: None,
                     offsets: None,
+                    word_ids: None,
                 })
             }
         }
@@ -181,6 +183,7 @@ pub struct EncodingDetails {
     pub special_tokens_mask: Option<Vec<u32>>,
     pub attention_mask: Option<Vec<u32>>,
     pub offsets: Option<Vec<(usize, usize)>>,
+    pub word_ids: Option<Vec<Option<u32>>>,
 }
 
 #[repr(C)]
@@ -196,6 +199,7 @@ pub struct tokenizers_buffer {
     attention_mask: *mut u32,
     tokens: *mut *mut libc::c_char,
     offsets: *mut usize,
+    word_ids: *mut i32,  
     len: usize,
 }
 
@@ -394,6 +398,7 @@ pub struct tokenizers_encode_options {
     return_special_tokens_mask: bool,
     return_attention_mask: bool,
     return_offsets: bool,
+    return_word_ids: bool,
 }
 
 #[no_mangle]
@@ -406,7 +411,8 @@ pub extern "C" fn tokenizers_encode(ptr: *mut libc::c_void, message: *const libc
             type_ids: ptr::null_mut(), 
             special_tokens_mask: ptr::null_mut(), 
             attention_mask: ptr::null_mut(), 
-            offsets: ptr::null_mut()
+            offsets: ptr::null_mut(),
+            word_ids: ptr::null_mut()
         };
     }
     
@@ -420,7 +426,8 @@ pub extern "C" fn tokenizers_encode(ptr: *mut libc::c_void, message: *const libc
                 type_ids: ptr::null_mut(), 
                 special_tokens_mask: ptr::null_mut(), 
                 attention_mask: ptr::null_mut(), 
-                offsets: ptr::null_mut()
+                offsets: ptr::null_mut(),
+                word_ids: ptr::null_mut()
             }
         }
     };
@@ -442,7 +449,8 @@ pub extern "C" fn tokenizers_encode(ptr: *mut libc::c_void, message: *const libc
             type_ids: ptr::null_mut(),
             special_tokens_mask: ptr::null_mut(),
             attention_mask: ptr::null_mut(),
-            offsets: ptr::null_mut()
+            offsets: ptr::null_mut(),
+            word_ids: ptr::null_mut()
         }
     };
     
@@ -505,7 +513,24 @@ pub extern "C" fn tokenizers_encode(ptr: *mut libc::c_void, message: *const libc
         }
     }
 
-    tokenizers_buffer { ids, type_ids, special_tokens_mask, attention_mask, tokens, offsets, len }
+    let mut word_ids: *mut i32 = ptr::null_mut();
+    if options.return_word_ids {
+        if let Some(vec_word_ids_opt) = encoding_details.word_ids {
+            // convert Vec<Option<u32>> -> Vec<i32> with -1 sentinel
+            let mut flat: Vec<i32> = Vec::with_capacity(vec_word_ids_opt.len());
+            for maybe in vec_word_ids_opt {
+                match maybe {
+                    Some(v) => flat.push(v as i32),
+                    None => flat.push(-1),
+                }
+            }
+            flat.shrink_to_fit();
+            word_ids = flat.as_mut_ptr();
+            std::mem::forget(flat);
+        }
+    }
+
+    tokenizers_buffer { ids, type_ids, special_tokens_mask, attention_mask, tokens, offsets, word_ids, len }
 }
 
 #[no_mangle]
@@ -589,6 +614,12 @@ pub extern "C" fn tokenizers_free_buffer(buf: tokenizers_buffer) {
             for s in strings {
                 drop(std::ffi::CString::from_raw(s.cast::<libc::c_char>()));
             }   
+        }
+    }
+    if !buf.word_ids.is_null() {
+        unsafe {
+            // buf.len elements of i32
+            Vec::from_raw_parts(buf.word_ids, buf.len, buf.len);
         }
     }
 }
